@@ -1,0 +1,61 @@
+{
+  "lastChangelogVersion": "0.84.2",
+  "packages": [
+    {
+      "source": "npm:pi-deadloop",
+      "extensions": [
+        "-index.ts"
+      ]
+    },
+    "npm:@tintinweb/pi-subagents",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:@juicesharp/rpiv-advisor",
+    "npm:@juicesharp/rpiv-i18n",
+    "npm:@juicesharp/rpiv-web-tools",
+    "npm:@juicesharp/rpiv-args",
+    "npm:@juicesharp/rpiv-pi",
+    "npm:@juicesharp/rpiv-workflow",
+    "https://github.com/gsanhueza/pi-token-speed",
+    {
+      "source": "npm:pi-youtube-transcript",
+      "extensions": [
+        "-index.ts"
+      ]
+    },
+    {
+      "source": "npm:@zosmaai/pi-llm-wiki",
+      "extensions": [
+        "-extensions\\llm-wiki\\index.ts"
+      ],
+      "skills": [
+        "-skills\\llm-wiki\\SKILL.md"
+      ],
+      "prompts": [
+        "-prompts\\wiki-digest.md",
+        "-prompts\\wiki-discover.md",
+        "-prompts\\wiki-ingest.md",
+        "-prompts\\wiki-init.md",
+        "-prompts\\wiki-lint.md",
+        "-prompts\\wiki-query.md",
+        "-prompts\\wiki-req.md",
+        "-prompts\\wiki-record.md",
+        "-prompts\\wiki-retro.md",
+        "-prompts\\wiki-run.md",
+        "-prompts\\wiki-skills.md",
+        "-prompts\\wiki-status.md"
+      ]
+    }
+  ],
+  "defaultProvider": "ollama",
+  "defaultModel": "gemma-4",
+  "theme": "dark",
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 16384,
+    "keepRecentTokens": 20000
+  },
+  "extensions": [
+    "+extensions\\wiki-ingest.ts"
+  ]
+}

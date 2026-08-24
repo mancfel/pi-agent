@@ -1,0 +1,30 @@
+{
+    "providers": {
+        "ollama": {
+            "baseUrl": "http://192.168.1.102:8033/v1",
+            "api": "openai-completions",
+            "apiKey": "ollama",
+            "models": [
+                {
+                    "id": "gemma-4",
+                    "reasoning": true,
+                    "contextWindow": 262144,
+                    "maxTokens": 65536
+                }
+            ]
+        },
+        "ollama-local": {
+            "baseUrl": "http://localhost:8033/v1",
+            "api": "openai-completions",
+            "apiKey": "ollama",
+            "models": [
+                {
+                    "id": "gemma-4",
+                    "reasoning": true,
+                    "contextWindow": 65536,
+                    "maxTokens": 65536
+                }
+            ]
+        }
+    }
+}
