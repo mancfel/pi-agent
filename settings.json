@@ -1,54 +1,36 @@
 {
-  "lastChangelogVersion": "0.84.2",
+  "lastChangelogVersion": "0.99.2",
   "packages": [
-    {
-      "source": "npm:pi-deadloop",
-      "extensions": [
-        "-index.ts"
-      ]
-    },
-    "npm:@tintinweb/pi-subagents",
-    "npm:@juicesharp/rpiv-ask-user-question",
-    "npm:@juicesharp/rpiv-todo",
-    "npm:@juicesharp/rpiv-advisor",
-    "npm:@juicesharp/rpiv-i18n",
-    "npm:@juicesharp/rpiv-web-tools",
-    "npm:@juicesharp/rpiv-args",
-    "npm:@juicesharp/rpiv-pi",
-    "npm:@juicesharp/rpiv-workflow",
     "https://github.com/gsanhueza/pi-token-speed",
     {
-      "source": "npm:pi-youtube-transcript",
+      "source": "npm:pi-memory",
       "extensions": [
         "-index.ts"
       ]
     },
+    "npm:pi-unsloth-webtools",
+    "npm:@juicesharp/rpiv-ask-user-question",
     {
-      "source": "npm:@zosmaai/pi-llm-wiki",
+      "source": "npm:pi-agent-browser-native",
       "extensions": [
-        "-extensions\\llm-wiki\\index.ts"
-      ],
-      "skills": [
-        "-skills\\llm-wiki\\SKILL.md"
-      ],
-      "prompts": [
-        "-prompts\\wiki-digest.md",
-        "-prompts\\wiki-discover.md",
-        "-prompts\\wiki-ingest.md",
-        "-prompts\\wiki-init.md",
-        "-prompts\\wiki-lint.md",
-        "-prompts\\wiki-query.md",
-        "-prompts\\wiki-req.md",
-        "-prompts\\wiki-record.md",
-        "-prompts\\wiki-retro.md",
-        "-prompts\\wiki-run.md",
-        "-prompts\\wiki-skills.md",
-        "-prompts\\wiki-status.md"
+        "-dist\\extensions\\agent-browser\\index.js"
+      ]
+    },
+    {
+      "source": "npm:pi-prompt-tracker",
+      "extensions": [
+        "-extensions\\prompt-tracker.ts"
       ]
     }
   ],
   "defaultProvider": "ollama",
   "defaultModel": "gemma-4",
+  "defaultTools": [
+    "read",
+    "powershell",
+    "edit",
+    "write"
+  ],
   "theme": "dark",
   "compaction": {
     "enabled": true,
@@ -56,6 +38,6 @@
     "keepRecentTokens": 20000
   },
   "extensions": [
-    "+extensions\\wiki-ingest.ts"
+    "-extensions\\wiki-ingest.ts"
   ]
 }

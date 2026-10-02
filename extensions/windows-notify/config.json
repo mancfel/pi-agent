@@ -1,0 +1,12 @@
+{
+  "on_settle": true,
+  "on_turn_end": false,
+  "idle_delay_ms": 2000,
+  "play_sound": true,
+  "audio_output_device": "Speakers",
+  "sound_file": null,
+  "volume": 75,
+  "title": "Pi Agent",
+  "show_session_name": true,
+  "show_foreground": false
+}

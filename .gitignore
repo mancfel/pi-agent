@@ -3,3 +3,7 @@
 /auth.json
 /models-store.json
 /trust.json
+/pi-unsloth-cache/
+/memory/
+/prompt-logs/
+**/__pycache__/

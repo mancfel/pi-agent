@@ -1,0 +1,47 @@
+# Convention Ignore File Template
+# Copy this as `.convention-ignore` in your repository root.
+# Uses gitignore-style syntax to exclude paths from convention analysis.
+
+# Test files and directories
+tests/
+__tests__/
+test/
+*.test.*
+*.spec.*
+*_test.py
+*Test.java
+*_spec.rb
+
+# Generated / build artifacts
+dist/
+build/
+out/
+target/
+bin/
+obj/
+
+# Dependencies
+node_modules/
+venv/
+.venv/
+vendor/
+Pods/
+go/pkg/
+
+# IDE / editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation (not code)
+docs/
+README.md
+CHANGELOG.md
+LICENSE
+
+# CI/CD configuration
+.github/
+.gitlab-ci.yml
+Jenkinsfile

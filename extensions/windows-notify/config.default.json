@@ -1,0 +1,9 @@
+{
+  "on_settle": true,
+  "on_turn_end": false,
+  "idle_delay_ms": 2000,
+  "play_sound": false,
+  "sound_file": null,
+  "title": "Pi Agent",
+  "show_session_name": true
+}
