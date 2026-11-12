@@ -124,12 +124,17 @@ Using the template from **references/templates.md**:
 - Define correctness properties based on examples or property-based testing where applicable.
 - Document risks and mitigations.
 
-### Step 5: Generate Design (`specs/<feature-name>/design.md`)
-Using the template from **references/templates.md**:
-- Describe architectural decisions with options considered.
-- Include data flow diagram (mermaid or text fallback).
-- List file/class changes in a table.
-- Define test strategy linking requirements to test methods.
+### Step 4.5: Explore External Library APIs (.NET projects only — Optional but Recommended)
+Before finalizing design decisions that depend on external NuGet packages, explore their actual API surface using the `.NET Types Explorer MCP server`. This prevents designing against non-existent methods or choosing suboptimal approaches because you don't know what's available.
+
+1. Identify which assemblies/packages are relevant to this feature from the discovery report (Phase C of project-discovery) and the `tasks.md` dependencies.
+2. For each key assembly:
+   - Call `NamespacesExplorer(ProjectFileAbsolutePath, AssemblyNames=["PackageName"])` to list all namespaces.
+   - For namespaces likely used by this feature, call `NamespaceTypes(Namespaces=["Key.Namespace"])` to get type signatures.
+3. Record in the design document:
+   - Which types exist and their public constructors/methods/properties.
+   - Any constraints discovered (e.g., "constructor requires IServiceProvider", "method returns Task<T> not T").
+4. If a package is **not yet referenced** but needed for the feature: use `NuGetPackageSearch(SearchQuery="package keyword")` to find candidates, then `NuGetPackageVersions(PackageId)` to check version compatibility with existing packages.
 
 ### Step 5.5: (Optional) Generate Test Plan (`specs/<feature-name>/test-plan.md`)
 If the feature touches ≥2 logical layers (e.g., API routes + UI components, or introduces new business logic), create a standalone `test-plan.md` artifact after generating tasks but before setting status to `PLAN_READY`. This is NOT part of the standard template — it follows the pattern documented in **feature-development/SKILL.md § Phase 5b**.

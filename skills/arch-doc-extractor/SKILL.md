@@ -30,6 +30,13 @@ Use this skill to generate `ARCHITECTURE.md` from a C#/.NET codebase by combinin
 
 > **Note:** No external packages are required beyond Python standard library (`os`, `re`, `xml.etree.ElementTree`, `json`, `pathlib`). The script is self-contained.
 
+## Script Location
+
+> **CRITICAL**: All Python scripts for this skill are located in the `scripts/` subfolder of this skill directory:
+> - Wrapper script: `C:/Users/super/.pi/agent/skills/arch-doc-extractor/scripts/extract_arch.py`
+>
+> Always reference the full path using this pattern. Do not guess or search for scripts elsewhere.
+
 ## Invocation — Two Workflows
 
 ### Workflow A: Agent-Synthesized (Recommended for pi-agent)
@@ -211,6 +218,15 @@ tail -3 "<target-dir>/ARCHITECTURE.md"        # Verify footer note is intact
 > **Alternative approach — single `write` call:** If the solution has ≤10 projects and the total expected output is <300 lines (e.g., small solutions with few DbContexts/controllers), a single `write` tool call for all sections at once can work. Use judgment based on extraction data density before choosing this route.
 
 > **Important: Section separator.** Each chunk file should start with `---\n` (markdown horizontal rule) as a section boundary, except Chunk 1 which starts directly with `# Architecture Documentation`. After concatenation, verify no duplicate `---` separators appear between chunks.
+
+### Date Handling — ALWAYS Use Today's Actual Date
+
+> **CRITICAL**: Any `{{date_generated}}`, `{{timestamp}}`, or similar date placeholders in templates are **examples only**. You MUST always substitute them with today's actual date when generating documents.
+>
+> - Format: `YYYY-MM-DD` (e.g., `2025-08-26`)
+> - Never copy dates from template examples, previous runs, or placeholder text.
+> - When reading a template file that contains `{{date_generated}}` or `on {{timestamp}}.*`, replace with the current calendar date at time of generation.
+> - If you find a previously generated document with an old/wrong date, update it to today's date during regeneration.
 
 ### Synthesis Prompt Template (per chunk)
 

@@ -25,23 +25,67 @@ This file contains rules governing how agents behave during code generation, edi
 
 ---
 
-## Pre-Planning & Implementation Context Check (Critical)
+## Modular Conventions System (Critical)
 
-**Before planning any code change or beginning implementation, the agent MUST check for and read existing project documentation files.** These files encode accumulated knowledge about the repository that must be respected to avoid conflicts with established patterns.
+Conventions are organized as a **modular topic-based system** rather than monolithic files. Each convention file covers one specific topic (language, framework, pattern, testing, etc.). The agent MUST discover, resolve, and apply conventions following this hierarchical protocol.
 
-### Required Files to Check
-The agent must look for these files in the **repository root** before starting work:
+### File Structure
 
-| File | Purpose |
-|------|--------|
-| `CONVENTIONS.md` | Project coding conventions: naming, error handling, structure, library preferences, anti-patterns |
-| `ARCHITECTURE.md` | High-level architecture: module boundaries, data flow, dependency graph, deployment model |
+```
+Global conventions:  ~/.pi/agent/conventions/
+  ├── conventions.md          ← Index / entry point (REQUIRED — always read first)
+  ├── general.md              ← General coding principles
+  ├── dotnet.md               ← .NET/C# specific rules
+  ├── react.md                ← React/TypeScript frontend rules
+  ├── unit-test-dotnet.md     ← Unit testing in .NET
+  ├── unit-test-react.md      ← Unit testing in React
+  └── ...                     ← Any number of topic modules
 
-If either file exists (check common locations: repo root, `.pi/`, or any project-specific documentation directory), the agent MUST:
-1. **Read the full content** of each existing file.
-2. **Identify relevant sections** that apply to the current task scope (e.g., if modifying a controller, check convention rules for controllers).
-3. **Align all proposed changes** with what these documents prescribe — do not introduce patterns that contradict them without explicit user approval and document update.
-4. If no such files exist yet, create them during discovery (delegate to `project-discovery` skill) before proceeding to planning or implementation.
+Project conventions: <project-root>/conventions/   (optional override layer)
+  ├── conventions.md          ← Project-specific index (overrides global if present)
+  └── ...                     ← Topic overrides for this project only
+```
+
+### Resolution Order (Cascading Override)
+
+For any given convention **topic**, the resolution follows a cascading lookup:
+
+1. **Check project-level first**: `conventions/<topic>.md` in the repository root
+2. **Fall back to global**: `~/.pi/agent/conventions/<topic>.md`
+3. The most specific (nearest) file wins — project rules **override** global rules.
+4. If a topic is defined at both levels, project content takes precedence; topics only present globally are still applied.
+
+> ⚠️ The agent does NOT merge files line-by-line. It reads whichever version of each topic file exists (project or global). A project can selectively override any subset of topics while inheriting the rest unchanged from global.
+
+### Agent Protocol: Discovering and Applying Conventions
+
+Before planning or implementing any code change, the agent MUST follow these steps:
+
+#### Step 1 — Locate the Index File
+- Check if `conventions/conventions.md` exists in the **repository root**.
+- If yes → read it as the active index.
+- If no → fall back to reading `~/.pi/agent/conventions/conventions.md`.
+- This index is the **single entry point**. Never guess which topic files exist.
+
+#### Step 2 — Identify Relevant Topics
+- Analyze the task at hand (language, framework, pattern, testing, architecture, etc.).
+- Read the index file and identify all topics that are relevant to the current work.
+- Examples:
+  - Writing a C# controller → look for `dotnet`, `unit-test-dotnet`
+  - Building a React component with tests → look for `react`, `unit-test-react`
+  - General refactoring → read `general` first
+
+#### Step 3 — Resolve Each Topic File
+For every identified topic:
+1. Check if `<topic>.md` exists in project's `conventions/` folder.
+2. If yes → **read the project version** (it overrides global).
+3. If no → read the global version from `~/.pi/agent/conventions/<topic>.md`.
+4. Read and internalize all resolved topic files before proceeding.
+
+#### Step 4 — Apply All Resolved Conventions
+- Align ALL proposed changes with the combined set of resolved conventions.
+- Do NOT introduce patterns that contradict any loaded convention without explicit user approval.
+- If a convention is ambiguous or conflicts between topics, flag it to the user for resolution.
 
 ### When This Applies
 This rule triggers whenever the agent is about to:
@@ -50,13 +94,14 @@ This rule triggers whenever the agent is about to:
 - Execute any feature development phase (planning, design, implementation).
 
 ### Why This Matters
-- CONVENTIONS.md captures **community/team agreements** on style and structure — ignoring it creates drift from established norms.
-- ARCHITECTURE.md documents **structural decisions** — violating module boundaries causes architectural decay.
-- Agents work with project context from scratch; these files are the only persistent memory of accumulated knowledge across sessions.
+- Modular conventions allow **incremental growth** — add topic modules as needs arise without bloating a single file.
+- Project-level overrides enable **per-project customization** while inheriting sensible defaults globally.
+- The index-first approach ensures agents always know what topics exist and which apply to their task.
 
 ### Enforcement
-- If either file exists but was not read before code generation/editing, this is a protocol violation.
-- When proposing changes that would conflict with an existing convention or architecture rule, explicitly flag the conflict and ask user approval rather than silently overriding.
+- Failing to locate and read the conventions index before code generation/editing is a protocol violation.
+- Applying project-specific topic files over global ones (when they exist) without following the resolution order is a protocol violation.
+- When proposing changes that would conflict with any loaded convention, explicitly flag the conflict and ask user approval rather than silently overriding.
 
 ---
 

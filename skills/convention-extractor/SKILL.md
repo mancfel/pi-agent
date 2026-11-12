@@ -9,11 +9,19 @@ Use this skill to generate or regenerate `CONVENTIONS.md` (alias compatible with
 
 > **AGENTS.md Rule**: Per AGENTS.md § Pre-Planning & Implementation Context Check, other skills MUST read `CONVENTIONS.md` before planning or implementing. This skill is responsible for creating/updating that file when conventions change.
 
+## Script Location
+
+> **CRITICAL**: All Python scripts for this skill are located in the `scripts/` subfolder of this skill directory:
+> - Wrapper script: `C:/Users/super/.pi/agent/skills/convention-extractor/scripts/extract_conventions.py`
+>
+> Always reference the full path using this pattern. Do not guess or search for scripts elsewhere.
+> The underlying external extractor (`lisyoen/convention-extractor`) is invoked by the wrapper via `python -m extract_convention`. If it's not available on your system, clone it from GitHub and place `extract_convention.py` inside the same `scripts/` folder so `python -m extract_convention` resolves correctly.
+
 ## Execution Model — Single Agent, Foreground Only
 
 > Run every command directly. Do NOT spawn a background process for extraction.
 >
-> - Execute `extract_conventions.py` inline and wait for completion before proceeding.
+> - Execute `C:/Users/super/.pi/agent/skills/convention-extractor/scripts/extract_conventions.py` (full path) inline and wait for completion before proceeding.
 > - Validate outputs immediately after invocation.
 > - If the tool fails, report the error and attempt manual fallback in the same session.
 
@@ -48,16 +56,29 @@ Configuration is resolved in this order (highest to lowest priority):
 
 ## Invocation
 
-### Via Wrapper Script
+### Via Wrapper Script (Full Path)
+
+> Always use the **full path** to the wrapper script in `scripts/`:
 
 ```bash
 python C:/Users/super/.pi/agent/skills/convention-extractor/scripts/extract_conventions.py \
     --target-dir "D:/projectRoot" \
-    --lang python \
-    --threshold 90 \
+    --lang csharp \
+    --threshold 70 \
     --merge D:/projectRoot/CONVENTIONS.md \
     --output D:/projectRoot/generated_convention.md
 ```
+
+> For a .NET/C# codebase, set `--lang csharp`. The tool must have C# language support patched into it (the upstream `lisyoen/convention-extractor` does not include C# by default — add `.cs` to the `LANG_EXTENSIONS` dictionary and implement `_analyze_csharp()` if needed).
+
+### Date Handling — ALWAYS Use Today's Actual Date
+
+> **CRITICAL**: Any date shown in examples, templates, or placeholder text is an **example only**. You MUST always substitute dates with today's actual calendar date when generating documents.
+>
+> - Format: `YYYY-MM-DD` (e.g., `2025-08-26`)
+> - Never copy dates from template examples, previous runs, or placeholder comments.
+> - When regenerating `CONVENTIONS.md`, update all header metadata fields (`Generated`, `timestamp`) to today's date.
+> - The `refactoring_needed_*.txt` filename should include the current date as part of its naming convention.
 
 ### Direct Tool (Advanced)
 

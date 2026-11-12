@@ -176,6 +176,10 @@ When triggered (automatically during planning review or explicitly requested by 
 When status is `APPROVED`:
 - Read tasks from `specs/<feature-name>/tasks.md` (or compact plan).
 - Follow each step of **feature-implement/SKILL.md**: verify status, execute tasks sequentially, update `[ ] → [x]`, handle conflicts.
+- **Prefer semantic IDE operations over raw file edits** when modifying existing code:
+  - For symbol renames or signature changes → use Rider MCP tools (`rename_refactoring`, `change_api_signature`) instead of text search/replace.
+  - For extracting interfaces/base classes/methods → use the corresponding extract tools.
+  - After making any change → run `lint_files()` and optionally `build_solution_start()` to catch errors early.
 - On design conflict during implementation: revert status to `PLAN_READY`, log the conflict in `implementation-log.md`, and halt.
 
 ### Phase 8: Verify

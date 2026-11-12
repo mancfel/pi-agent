@@ -68,7 +68,12 @@ If they do NOT exist, the discovery report MUST include explicit sections that c
 2. **TypeScript/JS**: Read `package.json` (`dependencies`, `devDependencies`)
 3. **Rust**: Read `Cargo.toml`
 4. **Go**: Read `go.mod`
-5. Summarize runtime vs. dev dependencies with purpose inferred from package name.
+5. **.NET/C#**: For each `.csproj` file found, use the `.NET Types Explorer MCP server` to discover referenced assemblies:
+   - Call `ReferencedAssembliesExplorer(ProjectFileAbsolutePath)` with the full path to the project.
+   - Identify third-party NuGet packages (filter out `System.*`, `Microsoft.*`, and project-internal assemblies).
+   - For key assemblies, call `NamespacesExplorer(assemblyNames)` to understand how they are organized.
+   - Record discovered package names, versions (from project file), namespace count, and key namespaces in the dependencies table.
+6. Summarize runtime vs. dev dependencies with purpose inferred from package name.
 
 ### Phase D: Test Structure
 1. Find test directories/files:

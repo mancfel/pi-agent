@@ -105,7 +105,22 @@ For each task:
 
 1. **Read context files** listed in the task's "Precedents" or "File Changes" references.
 2. **Implement changes** following the design document and using cited precedents as patterns.
-3. **Verify locally** that the change is consistent with the requirement it validates.
+   - **Always prefer semantic IDE operations over raw file edits** when modifying existing code that is tracked by Rider:
+     | Operation | Tool to use | When |
+     |-----------|-------------|------|
+     | Rename any symbol | `rename_refactoring(filePath, symbolName, newName)` | Changing class names, method names, property names, field names — anywhere in the solution |
+     | Change method signature | `change_api_signature(filePath, methodName, parameters)` | Adding/removing/reordering method parameters |
+     | Extract interface | `extract_interface(filePath, typeName, interfaceName, members)` | When a class needs to implement an abstraction for its selected members |
+     | Extract base class | `extract_base_class(filePath, typeName, baseClassName, members)` | When multiple classes share common behavior that should be lifted |
+     | Extract method from statements | `extract_method(filePath, startLine, endLine, methodName)` | When a block of statements should become a named helper |
+     | Delete unused symbol | `safe_delete(filePath, symbolName)` | Removing types or members with no remaining usages |
+     | Move type to namespace | `move_type_to_namespace(filePath, typeName, targetNamespace)` | Reorganizing project structure |
+     | Fix using directives / namespaces | `reorganize_namespaces(scope)` | After moving files between folders, before committing |
+   - **Never manually rename symbols** across multiple files — use the IDE tool which handles all references including `nameof()`, XML docs, XAML bindings, Razor views, and C++ includes.
+3. **Verify locally**: after applying changes:
+   - Run `lint_files([affectedFiles], min_severity: 'warning')` to catch errors and style issues.
+   - For .NET projects: run `build_solution_start(rebuild: false)` then poll `build_solution_state(sessionId)` to confirm compilation succeeds.
+   - If lint or build fails → fix the reported issues before marking the task complete.
 4. **Update checklist**: Change `[ ]` to `[x]` for the completed task.
 5. **Log the completion** (for complex features, write to `implementation-log.md`).
 
@@ -124,11 +139,11 @@ If during implementation a conflict with the approved design is discovered:
 3. **Revert status**: Change frontmatter from current state to `PLAN_READY`.
 4. **Report to user**: Explain what was found, why it conflicts, and that re-review is needed.
 
-### Step 3.5: Read Test Plan (Optional but Recommended)
-Before implementation begins, check for `specs/<feature-name>/test-plan.md`. If it exists:
-- Review the detailed test case breakdown to understand expected behavior.
-- Note any mock strategies or configuration requirements (e.g., jsdom polyfills).
-- Use this as a checklist during verification — ensure each listed scenario is covered by an actual test file.
+### Step 3.5: Discover Existing Tests (Recommended for .NET projects)
+Before writing new tests, use Rider's test discovery to find existing unit tests:
+- Call `findTests(className, classNamespace, filePath)` with the target production class details.
+- This returns the most relevant existing test file so you can extend it rather than creating duplicates.
+- For methods with multiple overloads, pass `methodName` and/or `methodArguments` to get precise matches.
 
 ### Step 4: Verification (Post-Implementation)
 
